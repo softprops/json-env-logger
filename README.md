@@ -71,7 +71,7 @@ fn main() {
 }
 ```
 
-> ⭐ These structures fields can are currently limited for now to the types `u64`, `i64`, `f64`, `bool`, `char` and `str`
+> ⭐ These structured fields are currently limited for now to the types `u64`, `i64`, `f64`, `bool`, `char` and `str`
 
 Run your program with `RUST_LOG=info your/bin`
 

@@ -37,6 +37,8 @@ json_env_logger = "0.1"
 
 ## usage
 
+### basic use
+
 Like `env_logger`, call `init` before you start logging.
 
 ```rust
@@ -46,6 +48,30 @@ fn main() {
     log::info!("👋")
 }
 ```
+
+Run your program with `RUST_LOG=info your/bin`
+
+### adding more structure
+
+The `log` crate is working its way towards adding first class interfaces for structured fields
+in its macros. `json_env_logger` will serialize them when present. Sadly the `log` crate
+doesn't expose these macro interfaces quite yet. ...But `kv-log-macro` does!
+
+```toml
+[dependencies]
+json_env_logger = "0.1"
+kv-log-macro = "1.0"
+```
+
+```rust
+fn main() {
+    json_env_logger::init();
+
+    log::info!("👋", { size: "medium", age: 42 })
+}
+```
+
+> ⭐ These structures fields can are currently limited for now to the types `u64`, `i64`, `f64`, `bool`, `char` and `str`
 
 Run your program with `RUST_LOG=info your/bin`
 
@@ -84,7 +110,7 @@ fn main() {
 
 Run your program with `RUST_LOG=info your/bin`
 
-> ⭐You can also serialize backtraces by enabling the `backtrace` cargo feature
+> ⭐ You can also serialize backtraces by enabling the `backtrace` cargo feature
 
 ## faq
 

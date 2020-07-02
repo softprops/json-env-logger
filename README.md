@@ -47,6 +47,28 @@ fn main() {
 }
 ```
 
+Run your program with `RUST_LOG=info your/bin`
+
+### iso-timestamps
+
+By default json env logger uses unix epoch time for timestamps. You might prefer
+ISO-8601 timestamps instead. You can swap implementations with by enabling the `iso-timestamps` feature
+
+```toml
+[dependencies]
+json_env_logger = { version = "0.1", features = ["iso-timestamps"] }
+```
+
+```rust
+fn main() {
+    json_env_logger::init();
+
+    log::info!("👋")
+}
+```
+
+Run your program with `RUST_LOG=info your/bin`
+
 ### panic visibility
 
 When panics are unavoidable you can register a panic hook that serializes the panic to json before logging it with `error!`
@@ -60,6 +82,9 @@ fn main() {
 }
 ```
 
+Run your program with `RUST_LOG=info your/bin`
+
+> ⭐You can also serialize backtraces by enabling the `backtrace` cargo feature
 
 ## faq
 

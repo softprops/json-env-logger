@@ -189,7 +189,7 @@ Some features of `env_logger` `json_env_logger` doesn't use and those bring in e
 
 <details><summary>I have more questions</summary>
 <p>
- That's not technically a question but ok. Ask away by opening a GitHub issue. Thanks!
+ That's not technically a question but ok. Ask away by [opening a GitHub issue](https://github.com/softprops/json-env-logger/issues/new). Thanks!
 </p>
 </details>
 &nbsp;

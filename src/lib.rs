@@ -14,6 +14,15 @@
 //! [dependencies]
 //! json_env_logger = { version = "0.1", features = ["iso-timestamps"] }
 //! ```
+//! * `backtrace`
+//!
+//! When registering a panic hook with `panic_hook` by default backtraces are omitted. You can
+//! annotate your error with then by enabling the `backtrace` feature.
+//!
+//! ```toml
+//! [dependencies]
+//! json_env_logger = { version = "0.1", features = ["backtrace"] }
+//! ```
 
 // export to make types accessible without
 // requiring adding another Cargo.toml dependency
@@ -45,7 +54,7 @@ pub fn try_init() -> Result<(), log::SetLoggerError> {
 }
 
 /// Register a panic hook that serializes panic information as json
-/// and logs as a `log::error`
+/// and logs via `log::error`
 pub fn panic_hook() {
     panic::set_hook(Box::new(|info| {
         let thread = thread::current();

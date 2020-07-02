@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["builder","Yields the standard env_logger builder configured to log in JSON format"],["init","Register configured json env logger implementation with `log` crate."],["panic_hook","Register a panic hook that serializes panic information as json and logs via `log::error`"],["try_init","Register configured json env logger with `log` crate"]]});

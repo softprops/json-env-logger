@@ -87,12 +87,7 @@ pub fn panic_hook() {
             None => {
                 #[cfg(not(feature = "backtrace"))]
                 {
-                    kv_log_macro::error!(
-                        "panicked at '{}'", msg,
-                        {
-                            thread: thread
-                        }
-                    );
+                    kv_log_macro::error!("panicked at '{}'", msg, { thread: thread });
                 }
                 #[cfg(feature = "backtrace")]
                 {

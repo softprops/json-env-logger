@@ -130,7 +130,7 @@ for you if you emit json logs such as
 </details>
 &nbsp;
 
- <details><summary>What use case does `json_env_logger` target?</summary>
+ <details><summary>What use case does json_env_logger target?</summary>
 <p>
 Most folks Rust logging market start out with `log`. They soon find they need configurable logging so they move to `env_logger`. Sometimes they want `env_logger` but pretty logging for host local application so they move to `pretty_env_logger`.
 
@@ -177,7 +177,7 @@ There's also [`femme`](https://github.com/lrlna/femme/) which is one part a pret
 </details>
 &nbsp;
 
- <details><summary>so what's are the tradeoffs of `json_env_logger` then?</summary>
+ <details><summary>So what are the tradeoffs of json_env_logger then?</summary>
 <p>
 
 Glad you asked. `env_logger` has some opinion defaults, some of which you might not like. An example, it logs to stderr by default. You might play for team stdout. The good news is that json_env_logger exposes its interfaces for overriding those opinions. 

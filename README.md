@@ -37,6 +37,28 @@ json_env_logger = "0.1"
 
 ## usage
 
+Like `env_logger`, call `init` before you start logging.
+
+```rust
+fn main() {
+    json_env_logger::init();
+
+    log::info!("👋")
+}
+```
+
+### panic visibility
+
+When panics are unavoidable you can register a panic hook that serializes the panic to json before logging it with `error!`
+
+```rust
+fn main() {
+    json_env_logger::init();
+    json_env_logger::panic_hook();
+
+    panic!("whoooops!")
+}
+```
 
 
 ## faq

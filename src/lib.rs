@@ -1,4 +1,4 @@
-//! `json_env_logger` is an extension of `env_logger` crate providing JSON formatted logs
+//! `json_env_logger` is an extension of `env_logger` crate providing JSON formatted logs.
 //!
 //! `env_logger` is a crate provides a way to control active log levels via a `RUST_LOG` env variable
 //!
@@ -6,8 +6,8 @@
 //!
 //! * `iso-timestamps`
 //!
-//! By default a timestamp field called `ts` is emitted with the unix epic timestamp in seconds
-//! You can replace these with IOS-8601 timestamps by enabling the `iso-timestamps` feature. Note, this will add `chrono` crate
+//! By default, a timestamp field called `ts` is emitted with the current unix epic timestamp in seconds
+//! You can replace this with IOS-8601 timestamps by enabling the `iso-timestamps` feature. Note, this will add `chrono` crate
 //! to your dependency tree.
 //!
 //! ```toml

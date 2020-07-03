@@ -1,5 +1,5 @@
 <h1 align="center">
-  json env logger
+  json logger
 </h1>
 
 <p align="center">
@@ -7,16 +7,16 @@
 </p>
 
 <div align="center">
-  <a alt="GitHub Actions" href="https://github.com/softprops/json-env-logger/actions">
-    <img src="https://github.com/softprops/json-env-logger/workflows/Main/badge.svg"/>
+  <a alt="GitHub Actions" href="https://github.com/softprops/json-logger/actions">
+    <img src="https://github.com/softprops/json-logger/workflows/Main/badge.svg"/>
   </a>
-  <a alt="crates.io" href="https://crates.io/crates/json-env-logger">
-    <img src="https://img.shields.io/crates/v/json-env-logger.svg?logo=rust"/>
+  <a alt="crates.io" href="https://crates.io/crates/json-logger">
+    <img src="https://img.shields.io/crates/v/json-logger.svg?logo=rust"/>
   </a>
-  <a alt="docs.rs" href="http://docs.rs/json-env-logger">
-    <img src="https://docs.rs/json-env-logger/badge.svg"/>
+  <a alt="docs.rs" href="http://docs.rs/json-logger">
+    <img src="https://docs.rs/json-logger/badge.svg"/>
   </a>
-  <a alt="latest docs" href="https://softprops.github.io/json-env-logger">
+  <a alt="latest docs" href="https://softprops.github.io/json-logger">
    <img src="https://img.shields.io/badge/docs-latest-green.svg"/>
   </a>
   <a alt="license" href="LICENSE">
@@ -32,7 +32,7 @@ Add the following to your `Cargo.toml` file
 
 ```toml
 [dependencies]
-json_env_logger = "0.1"
+json_logger = "0.1"
 ```
 
 ## usage
@@ -43,7 +43,7 @@ Like `env_logger`, call `init` before you start your logging engines.
 
 ```rust
 fn main() {
-    json_env_logger::init();
+    json_logger::init();
 
     log::info!("👋")
 }
@@ -54,18 +54,18 @@ Run your program with `RUST_LOG=info your/bin`
 ### adding more structure
 
 The `log` crate is working its way towards adding first class interfaces for structured fields
-in its macros. `json_env_logger` will serialize them when present. Sadly the `log` crate
+in its macros. `json_logger` will serialize them when present. Sadly the `log` crate
 doesn't expose these macro interfaces quite yet. ...But `kv-log-macro` does!
 
 ```toml
 [dependencies]
-json_env_logger = "0.1"
+json_logger = "0.1"
 kv-log-macro = "1.0"
 ```
 
 ```rust
 fn main() {
-    json_env_logger::init();
+    json_logger::init();
 
     log::info!("👋", { size: "medium", age: 42 })
 }
@@ -82,12 +82,12 @@ ISO-8601 timestamps instead. You can swap implementations with by enabling the `
 
 ```toml
 [dependencies]
-json_env_logger = { version = "0.1", features = ["iso-timestamps"] }
+json_logger = { version = "0.1", features = ["iso-timestamps"] }
 ```
 
 ```rust
 fn main() {
-    json_env_logger::init();
+    json_logger::init();
 
     log::info!("👋")
 }
@@ -101,8 +101,8 @@ When panics are unavoidable, you can register a panic hook that serializes the p
 
 ```rust
 fn main() {
-    json_env_logger::init();
-    json_env_logger::panic_hook();
+    json_logger::init();
+    json_logger::panic_hook();
 
     panic!("whoooops!")
 }
@@ -130,7 +130,7 @@ for you if you emit json logs such as
 </details>
 &nbsp;
 
- <details><summary>What use case does json_env_logger target?</summary>
+ <details><summary>What use case does json_logger target?</summary>
 <p>
 
 Most folks on the Rust logging market start out with [`log`](https://crates.io/crates/log). They soon find they need configurable logging so they move to [`env_logger`](https://crates.io/crates/env_logger). Sometimes they want `env_logger` but pretty logging for host local application so they move to [`pretty_env_logger`](https://crates.io/crates/pretty_env_logger) of if you like [`emoji-logger`](https://crates.io/crates/emoji-logger).
@@ -168,7 +168,7 @@ vs
 
 ```rust
 fn main() {
-    json_env_logger::init();
+    json_logger::init();
 }
 ```
 
@@ -178,12 +178,12 @@ There's also [`femme`](https://github.com/lrlna/femme/) which is one part a pret
 </details>
 &nbsp;
 
- <details><summary>So what are the tradeoffs of json_env_logger then?</summary>
+ <details><summary>So what are the tradeoffs of json_logger then?</summary>
 <p>
 
-Glad you asked. It depends on `env_logger` which has some opinionated defaults, some of which you might not like. For example, it logs to stderr by default. You might play for team stdout. The good news is that json_env_logger exposes its interfaces for overriding those opinions. 
+Glad you asked. It depends on `env_logger` which has some opinionated defaults, some of which you might not like. For example, it logs to stderr by default. You might play for team stdout. The good news is that json_logger exposes its interfaces for overriding those opinions. 
 
-Some features available in `env_logger` `json_env_logger` doesn't use and those bring in extra transitive dependencies. We're aware. Luckily they are all behind `env_logger` feature flags and `json_env_logger` turns them all off! The only transient dependency is then just `log` which you already have if your doing any sort of logging:)
+Some features available in `env_logger` `json_logger` doesn't use and those bring in extra transitive dependencies. We're aware. Luckily they are all behind `env_logger` feature flags and `json_logger` turns them all off! The only transient dependency is then just `log` which you already have if your doing any sort of logging:)
 </p>
 </details>
 &nbsp;

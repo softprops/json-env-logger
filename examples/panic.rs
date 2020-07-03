@@ -7,8 +7,8 @@
 use kv_log_macro::{debug, error, info, trace, warn};
 
 fn main() {
-    json_env_logger::init();
-    json_env_logger::panic_hook();
+    json_logger::init();
+    json_logger::panic_hook();
     trace!("I am a trace", {task_id: "567", thread_id: "12"});
     debug!("I am a debug", { foo: 1 });
     info!("I am an info");

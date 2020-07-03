@@ -133,7 +133,7 @@ for you if you emit json logs such as
  <details><summary>What use case does json_env_logger target?</summary>
 <p>
 
-Most folks on the Rust logging market start out with `log`. They soon find they need configurable logging so they move to `env_logger`. Sometimes they want `env_logger` but pretty logging for host local application so they move to `pretty_env_logger`.
+Most folks on the Rust logging market start out with [`log`](https://crates.io/crates/log). They soon find they need configurable logging so they move to [`env_logger`](https://crates.io/crates/env_logger). Sometimes they want `env_logger` but pretty logging for host local application so they move to [`pretty_env_logger`](https://crates.io/crates/pretty_env_logger) of if you like [`emoji-logger`](https://crates.io/crates/emoji-logger).
 
 In other cases you want to run applications in a cloud service that rewards you for emitting logs in JSON format. That's use case this targets, those coming from `env_logger` but would like to leverage build in JSON log parsing and discovery options their cloud provided offers for free.
 </p>

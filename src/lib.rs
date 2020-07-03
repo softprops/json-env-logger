@@ -1,6 +1,7 @@
-//! `json_env_logger` is an extension of `env_logger` crate providing JSON formatted logs.
+//! `json_env_logger` is an extension of [`env_logger`](https://crates.io/crates/env_logger) crate providing JSON formatted logs.
 //!
-//! `env_logger` is a crate provides a way to control active log levels via a `RUST_LOG` env variable
+//! The [`env_logger`](https://crates.io/crates/env_logger) is a crate provides a way to control active log levels via a `RUST_LOG` env variable. See its documentation for
+//! syntax of declaring crate and module filtering options.
 //!
 //! ## features
 //!

@@ -172,7 +172,9 @@ fn main() {
 }
 ```
 
-There's also [`femme`](https://github.com/lrlna/femme/) which is one part a pretty printer, one part JSON logger, and one part WASM JS object logger. It's strength is that is indeed pretty! It's not _just_ pretty logger and yet also not _just_ a JSON logger. It's an assortment of things making it broadly focused rather than narrowly focused on JSON log formatting. If you only use one of those things you might be packing more than you need. If you are migrating from `env_logger`'s environment variable driving configuration options you are a bit out of luck. You will be finding yourself recompiling and rebuilding your application to change log levels.
+There's also [`femme`](https://github.com/lrlna/femme/) which is one part a pretty printer, one part JSON logger, and one part WASM JS object logger. It's strength is that is indeed pretty! It's not _just_ pretty logger and yet also not _just_ a JSON logger. It's an assortment of things making it broadly focused rather than narrowly focused on JSON log formatting. If you only use one of those things you might be packing more than you need.
+
+If you are migrating from `env_logger`'s environment variable driving configuration options you are a bit out of luck. You will be finding yourself recompiling and rebuilding your application to change log levels.
 
 </p>
 </details>

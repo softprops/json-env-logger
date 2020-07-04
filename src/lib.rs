@@ -32,7 +32,10 @@ pub extern crate env_logger;
 
 use env_logger::Builder;
 use log::kv;
-use std::{io, panic, thread};
+use std::{
+    io::{self, Write},
+    panic, thread,
+};
 
 /// Register configured json env logger implementation with `log` crate.
 ///
@@ -117,53 +120,58 @@ pub fn panic_hook() {
 /// Yields the standard env_logger builder configured to log in JSON format
 pub fn builder() -> Builder {
     let mut builder = Builder::from_default_env();
-    builder.format(|f, record| {
-        use io::Write;
-
-        write!(f, "{{")?;
-        write!(f, "\"level\":\"{}\",", record.level())?;
-
-        #[cfg(feature = "iso-timestamps")]
-        {
-            write!(
-                f,
-                "\"ts\":\"{}\"",
-                chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
-            )?;
-        }
-        #[cfg(not(feature = "iso-timestamps"))]
-        {
-            write!(
-                f,
-                "\"ts\":{}",
-                std::time::UNIX_EPOCH.elapsed().unwrap().as_millis()
-            )?;
-        }
-        //map.serialize_entry("msg", &record.args())?;
-        write!(f, ",\"msg\":")?;
-        write_json_str(f, &record.args().to_string())?;
-
-        struct Visitor<'a, W: Write> {
-            writer: &'a mut W,
-        }
-
-        impl<'kvs, 'a, W: Write> kv::Visitor<'kvs> for Visitor<'a, W> {
-            fn visit_pair(
-                &mut self,
-                key: kv::Key<'kvs>,
-                val: kv::Value<'kvs>,
-            ) -> Result<(), kv::Error> {
-                write!(self.writer, ",\"{}\":{}", key, val).unwrap();
-                Ok(())
-            }
-        }
-
-        let mut visitor = Visitor { writer: f };
-        record.key_values().visit(&mut visitor).unwrap();
-        writeln!(f, "}}")
-    });
-
+    builder.format(write);
     builder
+}
+
+fn write<F>(
+    f: &mut F,
+    record: &log::Record,
+) -> io::Result<()>
+where
+    F: Write,
+{
+    write!(f, "{{")?;
+    write!(f, "\"level\":\"{}\",", record.level())?;
+
+    #[cfg(feature = "iso-timestamps")]
+    {
+        write!(
+            f,
+            "\"ts\":\"{}\"",
+            chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+        )?;
+    }
+    #[cfg(not(feature = "iso-timestamps"))]
+    {
+        write!(
+            f,
+            "\"ts\":{}",
+            std::time::UNIX_EPOCH.elapsed().unwrap().as_millis()
+        )?;
+    }
+    //map.serialize_entry("msg", &record.args())?;
+    write!(f, ",\"msg\":")?;
+    write_json_str(f, &record.args().to_string())?;
+
+    struct Visitor<'a, W: Write> {
+        writer: &'a mut W,
+    }
+
+    impl<'kvs, 'a, W: Write> kv::Visitor<'kvs> for Visitor<'a, W> {
+        fn visit_pair(
+            &mut self,
+            key: kv::Key<'kvs>,
+            val: kv::Value<'kvs>,
+        ) -> Result<(), kv::Error> {
+            write!(self.writer, ",\"{}\":{}", key, val).unwrap();
+            Ok(())
+        }
+    }
+
+    let mut visitor = Visitor { writer: f };
+    record.key_values().visit(&mut visitor).unwrap();
+    writeln!(f, "}}")
 }
 
 // until log kv Value impl serde::Serialize
@@ -179,6 +187,20 @@ fn write_json_str<W: io::Write>(
 mod tests {
     use super::*;
     use std::error::Error;
+
+    #[test]
+    fn writes_records_as_json() -> Result<(), Box<dyn Error>> {
+        let record = log::Record::builder()
+            .args(format_args!("hello"))
+            .level(log::Level::Info)
+            .build();
+        let mut buf = Vec::new();
+        write(&mut buf, &record)?;
+        let output = std::str::from_utf8(&buf)?;
+        assert!(serde_json::from_str::<serde_json::Value>(&output).is_ok());
+        Ok(())
+    }
+
     #[test]
     fn escapes_json_strings() -> Result<(), Box<dyn Error>> {
         let mut buf = Vec::new();

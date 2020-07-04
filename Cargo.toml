@@ -3,6 +3,14 @@ name = "json_logger"
 version = "0.1.0"
 authors = ["softprops <d.tangren@gmail.com>"]
 edition = "2018"
+description = "A structured JSON logger for Rust"
+documentation = "https://docs.rs/json_logger/"
+homepage = "https://github.com/softprops/json-logger"
+repository = "https://github.com/softprops/hubjson-logger"
+keywords = ["json", "log"]
+license = "MIT"
+categories = ["development-tools::debugging"]
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

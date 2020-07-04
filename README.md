@@ -142,7 +142,7 @@ In other cases you want to run applications in a cloud service that rewards you 
  <details><summary>Does one of these already exist?</summary>
 <p>
 
-Yes. Like many crates in the Rust ecosystem, they are all good. Picking a dependency is a dance of picking your tradeoffs given an applications goals.
+A few actually. Like many crates in the Rust ecosystem, they are all good. Picking a dependency is a dance of picking your tradeoffs given an applications goals and needs.
 
 There's [`slog`](https://github.com/slog-rs/slog), an entire ecosystem of logging for Rust. It's strength is that its highly configurable. It's drawback is that it's highly configurable interface can get in the way of simple cases where you just want to emit structured logs in json without a lot of ceremony.
 

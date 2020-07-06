@@ -37,6 +37,26 @@ json_logger = "0.1"
 
 ## usage
 
+### tl;dr
+
+When you run
+
+```bash
+$ RUST_LOG=trace cargo -q run \
+  --example default \
+  --features iso-timestamps
+```
+
+You will get
+
+```json
+{"level":"TRACE","ts":"2020-07-06T03:41:57.831Z","msg":"I am a trace","task_id":567,"thread_id":"12"}
+{"level":"DEBUG","ts":"2020-07-06T03:41:57.832Z","msg":"I am a debug","foo":1}
+{"level":"INFO","ts":"2020-07-06T03:41:57.832Z","msg":"I am an info"}
+{"level":"WARN","ts":"2020-07-06T03:41:57.832Z","msg":"I am a warning"}
+{"level":"ERROR","ts":"2020-07-06T03:41:57.832Z","msg":"I am an error"}
+```
+
 ### basic use
 
 Like `env_logger`, call `init` before you start your logging engines.

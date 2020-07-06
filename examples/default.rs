@@ -8,7 +8,7 @@ use kv_log_macro::{debug, error, info, trace, warn};
 
 fn main() {
     json_logger::init();
-    trace!("I am a trace", {task_id: 567, thread_id: r#"12\t\ntest""#});
+    trace!("I am a trace", {task_id: 567, thread_id: "12"});
     debug!("I am a debug", { foo: 1 });
     info!("I am an info");
     warn!("I am a warning");

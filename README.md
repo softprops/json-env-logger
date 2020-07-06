@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-   A structured JSON logger for Rust
+   A simple structured JSON logger for Rust
 </p>
 
 <div align="center">

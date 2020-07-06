@@ -11,10 +11,10 @@
     <img src="https://github.com/softprops/json-env-logger/workflows/Main/badge.svg"/>
   </a>
   <a alt="crates.io" href="https://crates.io/crates/json-env-logger">
-    <img src="https://img.shields.io/crates/v/json-env-logger.svg?logo=rust"/>
+    <img src="https://img.shields.io/crates/v/json_env_logger.svg?logo=rust"/>
   </a>
   <a alt="docs.rs" href="http://docs.rs/json-env-logger">
-    <img src="https://docs.rs/json-env-logger/badge.svg"/>
+    <img src="https://docs.rs/json_env_logger/badge.svg"/>
   </a>
   <a alt="latest docs" href="https://softprops.github.io/json-env-logger">
    <img src="https://img.shields.io/badge/docs-latest-green.svg"/>

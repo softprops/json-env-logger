@@ -147,7 +147,7 @@ In other cases you want to run applications in a cloud service that rewards you 
  <details><summary>Does one of these already exist?</summary>
 <p>
 
-A few actually. Like many crates in the Rust ecosystem, they are all good. Picking a dependency is a dance of picking your tradeoffs given an applications goals and needs.
+A few actually. Like many crates in the Rust ecosystem, they are all good. Picking a dependency is a dance of picking your tradeoffs given an application's goals and needs.
 
 There's [`slog`](https://github.com/slog-rs/slog), an entire ecosystem of logging for Rust. It's strength is that its highly configurable. It's drawback is that it's highly configurable interface can get in the way of simple cases where you just want to emit structured logs in json without a lot of ceremony.
 
@@ -177,7 +177,9 @@ fn main() {
 }
 ```
 
-There's also [`femme`](https://github.com/lrlna/femme/) which is one part a pretty printer, one part JSON logger, and one part WASM JS object logger. It's strength is that is indeed pretty! It's not _just_ pretty logger and yet also not _just_ a JSON logger. It's an assortment of things making it broadly focused rather than narrowly focused on JSON log formatting. If you only use one of those things you might be packing more than you need.
+`slog`'s encouraged programming model is to pass loggers instances around as arguments. This is a good practice and allows for simple context propagation, but comes at the expense of being a much different programming model that others using the standard `log` crate have written code against so you may find yourself having to rewrite more code that just your program's initialization.
+
+There's also [`femme`](https://github.com/lrlna/femme/) which is one part pretty printer, one part JSON logger, and one part WASM JavaScript object logger. It's strength is that is indeed pretty! It's not _just_ pretty logger and yet also not _just_ a JSON logger. It's an assortment of things making it broadly focused rather than narrowly focused on JSON log formatting. If you only use one of those things you might be packing more than you need.
 
 If you are migrating from `env_logger`'s environment variable driving configuration options you are a bit out of luck. You will be finding yourself recompiling and rebuilding your application to change log levels.
 

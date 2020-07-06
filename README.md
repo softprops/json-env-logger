@@ -64,6 +64,11 @@ kv-log-macro = "1.0"
 ```
 
 ```rust
+// the macros exported in this crate are
+// log compatible and will one day be merged 
+// so save your future self the toil of find and replace
+use kv_log_macro as log;
+
 fn main() {
     json_logger::init();
 
@@ -146,7 +151,7 @@ A few actually. Like many crates in the Rust ecosystem, they are all good. Picki
 
 There's [`slog`](https://github.com/slog-rs/slog), an entire ecosystem of logging for Rust. It's strength is that its highly configurable. It's drawback is that it's highly configurable interface can get in the way of simple cases where you just want to emit structured logs in json without a lot of ceremony.
 
-Here's an example from its [docs](https://docs.rs/slog-json/2.3.0/slog_json/)
+Here's an example directly from its [docs](https://docs.rs/slog-json/2.3.0/slog_json/)
 
 ```rust
 #[macro_use]
@@ -193,7 +198,7 @@ Some features available in `env_logger` `json_logger` doesn't use and those brin
 <details><summary>I have more questions</summary>
 <p>
 
- That's not technically a question but ok. Ask away by [opening a GitHub issue](https://github.com/softprops/json-env-logger/issues/new). Thanks!
+ That's technically not a question but ok. Ask away by [opening a GitHub issue](https://github.com/softprops/json-env-logger/issues/new). Thanks!
 </p>
 </details>
 &nbsp;

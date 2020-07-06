@@ -1,2 +1,2 @@
 var ALIASES = {};
-ALIASES["json_logger"] = {};
+ALIASES["json_env_logger"] = {};

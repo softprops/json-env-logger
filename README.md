@@ -74,7 +74,7 @@ Run your program with `RUST_LOG=info your/bin`
 ### adding more structure
 
 The `log` crate is working its way towards adding first class interfaces for structured fields
-in its macros. `json_logger` will serialize them when present. Sadly the `log` crate
+in its macros. Rather then reinvent that functionality, this crate embraces it.  `json_logger` will serialize these key-value pairs when present. Sadly the `log` crate
 doesn't expose these macro interfaces quite yet. ...But `kv-log-macro` does!
 
 ```toml
@@ -96,13 +96,13 @@ fn main() {
 }
 ```
 
-> ⭐ These structured fields are currently limited for now to the types `u64`, `i64`, `f64`, `bool`, `char` and `str`
+> ⭐ These structured fields are currently limited for now to values of type `u64`, `i64`, `f64`, `bool`, `char` or `str`
 
 Run your program with `RUST_LOG=info your/bin`
 
 ### iso-timestamps
 
-By default json env logger uses unix epoch time for timestamps. You might prefer
+By default json_logger uses unix epoch time for timestamps. You might prefer
 ISO-8601 timestamps instead. You can swap implementations with by enabling the `iso-timestamps` feature
 
 ```toml

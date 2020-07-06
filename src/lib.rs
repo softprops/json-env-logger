@@ -1,6 +1,6 @@
 //! `json_logger` is an extension of [`env_logger`](https://crates.io/crates/env_logger) crate providing JSON formatted logs.
 //!
-//! The [`env_logger`](https://crates.io/crates/env_logger) is a crate provides a way to control active log levels via a `RUST_LOG` env variable. See its documentation for
+//! The [`env_logger`](https://crates.io/crates/env_logger) is a crate that provides a way to declare what log levels are enabled for which modules \via a `RUST_LOG` env variable. See its documentation for
 //! syntax of declaring crate and module filtering options.
 //!
 //! ## features
@@ -117,7 +117,7 @@ pub fn panic_hook() {
     }));
 }
 
-/// Yields the standard env_logger builder configured to log in JSON format
+/// Yields the standard `env_logger::Builder` configured to log in JSON format
 pub fn builder() -> Builder {
     let mut builder = Builder::from_default_env();
     builder.format(write);
@@ -150,7 +150,6 @@ where
             std::time::UNIX_EPOCH.elapsed().unwrap().as_millis()
         )?;
     }
-    //map.serialize_entry("msg", &record.args())?;
     write!(f, ",\"msg\":")?;
     write_json_str(f, &record.args().to_string())?;
 

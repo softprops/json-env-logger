@@ -120,11 +120,18 @@ pub fn panic_hook() {
 /// Yields the standard `env_logger::Builder` configured to log in JSON format
 pub fn builder() -> Builder {
     let mut builder = Builder::from_default_env();
-    builder.format(write);
+    builder.format(write_as_json);
     builder
 }
 
-fn write<F>(
+/// Writes the input record as json to the IO. Can be used to augment the default
+/// builder from the crate env_logger.
+///
+/// ```
+/// let env = env_logger::Env::new().default_filter_or("warn");
+/// env_logger::Builder::from_env(env).format(json_env_logger::write_as_json).init();
+/// ```
+pub fn write_as_json<F>(
     f: &mut F,
     record: &log::Record,
 ) -> io::Result<()>
@@ -194,7 +201,7 @@ mod tests {
             .level(log::Level::Info)
             .build();
         let mut buf = Vec::new();
-        write(&mut buf, &record)?;
+        write_as_json(&mut buf, &record)?;
         let output = std::str::from_utf8(&buf)?;
         assert!(serde_json::from_str::<serde_json::Value>(&output).is_ok());
         Ok(())

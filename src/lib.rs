@@ -163,7 +163,10 @@ where
             key: kv::Key<'kvs>,
             val: kv::Value<'kvs>,
         ) -> Result<(), kv::Error> {
-            write!(self.writer, ",\"{}\":{}", key, val).unwrap();
+            write!(self.writer, ",")?;
+            write_json_str(&mut self.writer, key.as_str())?;
+            write!(self.writer, ":")?;
+            write_json_str(&mut self.writer, &format!("{}", val))?;
             Ok(())
         }
     }
@@ -208,6 +211,35 @@ mod tests {
 	"#,
         )?;
         assert_eq!("\"\\\"\\n\\t\"", std::str::from_utf8(&buf)?);
+        Ok(())
+    }
+
+    #[test]
+    fn escapes_json_strings_within_kv() -> Result<(), Box<dyn Error>> {
+        use serde_json::Value;
+
+        let record = log::Record::builder()
+            .args(format_args!("msg"))
+            .key_values(&(
+                "challenge \"key\"",
+                r#""challenge":"key",{"nested":not really json}"#,
+            ))
+            .level(log::Level::Info)
+            .build();
+
+        // Output the record and then deserialize to make sure it works and we
+        // can locate the challenge string.
+        let mut buf = Vec::new();
+        write_as_json(&mut buf, &record)?;
+        let value = serde_json::from_str::<Value>(&std::str::from_utf8(&buf)?)?;
+
+        // Should be an object with a challenge key and value.
+        match value.get("challenge \"key\"") {
+            Some(Value::String(string)) => {
+                assert_eq!(string, r#""challenge":"key",{"nested":not really json}"#);
+            }
+            _ => panic!("Object with challenge key expected"),
+        };
         Ok(())
     }
 }

@@ -230,7 +230,7 @@ mod tests {
         // Output the record and then deserialize to make sure it works and we
         // can locate the challenge string.
         let mut buf = Vec::new();
-        write_as_json(&mut buf, &record)?;
+        write(&mut buf, &record)?;
         let value = serde_json::from_str::<Value>(&std::str::from_utf8(&buf)?)?;
 
         // Should be an object with a challenge key and value.

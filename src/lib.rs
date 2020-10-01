@@ -222,7 +222,7 @@ mod tests {
             .args(format_args!("msg"))
             .key_values(&(
                 "challenge \"key\"",
-                r#""challenge":"key",{"nested":not really json}"#,
+                r#""challenge":"value",{"nested":not really json}"#,
             ))
             .level(log::Level::Info)
             .build();
@@ -236,7 +236,7 @@ mod tests {
         // Should be an object with a challenge key and value.
         match value.get("challenge \"key\"") {
             Some(Value::String(string)) => {
-                assert_eq!(string, r#""challenge":"key",{"nested":not really json}"#);
+                assert_eq!(string, r#""challenge":"value",{"nested":not really json}"#);
             }
             _ => panic!("Object with challenge key expected"),
         };

@@ -44,7 +44,7 @@ use std::{
 ///
 /// # panics
 ///
-/// Panics of logger has already been configured
+/// Panics if logger has already been configured
 pub fn init() {
     try_init().unwrap()
 }

@@ -124,6 +124,16 @@ pub fn builder() -> Builder {
     builder
 }
 
+/// Use a custom environment variable instead of RUST_LOG
+pub fn builder_from_env<'a, E>(env_var_name: E) -> Builder
+where
+    E: Into<env_logger::Env<'a>>,
+{
+    let mut builder = Builder::from_env(env_var_name);
+    builder.format(write);
+    builder
+}
+
 fn write<F>(
     f: &mut F,
     record: &log::Record,
@@ -208,6 +218,52 @@ mod tests {
 	"#,
         )?;
         assert_eq!("\"\\\"\\n\\t\"", std::str::from_utf8(&buf)?);
+        Ok(())
+    }
+
+    // Adapter for testing output from logger
+    struct WriteAdapter {
+        sender: std::sync::mpsc::Sender<u8>,
+    }
+
+    impl io::Write for WriteAdapter {
+        // On write we forward each u8 of the buffer to the sender and return the length of the buffer
+        fn write(
+            &mut self,
+            buf: &[u8],
+        ) -> io::Result<usize> {
+            for chr in buf {
+                self.sender.send(*chr).unwrap();
+            }
+            Ok(buf.len())
+        }
+
+        fn flush(&mut self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+
+    #[test]
+    fn use_custom_env_var() -> Result<(), Box<dyn Error>> {
+        // USE FOO_LOG instead of RUST_LOG for env var. Sets level to info
+        std::env::set_var("FOO_LOG", "info");
+        // create rx/tx channels to captue log output
+        let (rx, tx) = std::sync::mpsc::channel();
+        builder_from_env("FOO_LOG")
+            .target(env_logger::Target::Pipe(Box::new(WriteAdapter {
+                sender: rx,
+            })))
+            .init();
+        // log level is info. should be parseable json
+        log::info!("Hello");
+        let hello_info_log = String::from_utf8(tx.try_iter().collect::<Vec<u8>>()).unwrap();
+        let hello_log_parsed: serde_json::Value = serde_json::from_str(hello_info_log.as_str())?;
+        println!("Msg: {}", hello_log_parsed["msg"]);
+        assert!(hello_log_parsed["msg"] == "Hello");
+        // should not print debug level logs due to FOO_LOG value
+        log::debug!("Hidden");
+        let hidden_debug_log = String::from_utf8(tx.try_iter().collect::<Vec<u8>>()).unwrap();
+        assert!(hidden_debug_log.len() == 0);
         Ok(())
     }
 }

@@ -124,6 +124,16 @@ pub fn builder() -> Builder {
     builder
 }
 
+/// Use a custom environment variable instead of RUST_LOG
+pub fn builder_from_env<'a, E>(env_var_name: E) -> Builder
+where
+    E: Into<env_logger::Env<'a>>,
+{
+    let mut builder = Builder::from_env(env_var_name);
+    builder.format(write);
+    builder
+}
+
 fn write<F>(
     f: &mut F,
     record: &log::Record,
@@ -185,18 +195,81 @@ fn write_json_str<W: io::Write>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::error::Error;
+    use lazy_static::lazy_static;
+    use serial_test::serial;
+    use std::{
+        error::Error,
+        sync::{Arc, RwLock},
+    };
+
+    // enables swapping loggers after it has been initialized
+    lazy_static! {
+        static ref LOGGER: Arc<RwLock<env_logger::Logger>> =
+            Arc::new(RwLock::new(env_logger::Logger::from_default_env()));
+    }
+    struct LoggerShim {}
+    impl log::Log for LoggerShim {
+        fn enabled(
+            &self,
+            metadata: &log::Metadata,
+        ) -> bool {
+            LOGGER.read().unwrap().enabled(metadata)
+        }
+
+        fn log(
+            &self,
+            record: &log::Record,
+        ) {
+            LOGGER.read().unwrap().log(record);
+        }
+
+        fn flush(&self) {}
+    }
+
+    fn replace_logger(logger: env_logger::Logger) {
+        log::set_max_level(logger.filter());
+        *LOGGER.write().unwrap() = logger;
+        let _ = log::set_boxed_logger(Box::new(LoggerShim {}));
+    }
+
+    // Adapter for testing output from logger
+    struct WriteAdapter {
+        sender: std::sync::mpsc::Sender<u8>,
+    }
+
+    impl io::Write for WriteAdapter {
+        // On write we forward each u8 of the buffer to the sender and return the length of the buffer
+        fn write(
+            &mut self,
+            buf: &[u8],
+        ) -> io::Result<usize> {
+            for chr in buf {
+                self.sender.send(*chr).unwrap();
+            }
+            Ok(buf.len())
+        }
+
+        fn flush(&mut self) -> io::Result<()> {
+            Ok(())
+        }
+    }
 
     #[test]
+    #[serial]
     fn writes_records_as_json() -> Result<(), Box<dyn Error>> {
-        let record = log::Record::builder()
-            .args(format_args!("hello"))
-            .level(log::Level::Info)
+        let (rx, tx) = std::sync::mpsc::channel();
+        let json_logger = builder()
+            .filter_level(log::LevelFilter::Info)
+            .target(env_logger::Target::Pipe(Box::new(WriteAdapter {
+                sender: rx,
+            })))
             .build();
-        let mut buf = Vec::new();
-        write(&mut buf, &record)?;
-        let output = std::str::from_utf8(&buf)?;
-        assert!(serde_json::from_str::<serde_json::Value>(&output).is_ok());
+        replace_logger(json_logger);
+        log::info!("hello");
+        let hello_info_log = String::from_utf8(tx.try_iter().collect::<Vec<u8>>()).unwrap();
+        let hello_log_parsed: serde_json::Value = serde_json::from_str(hello_info_log.as_str())?;
+        println!("Full json log: {}", hello_info_log);
+        assert!(hello_log_parsed["msg"] == "hello");
         Ok(())
     }
 
@@ -207,7 +280,36 @@ mod tests {
             &mut buf, r#""
 	"#,
         )?;
+        println!("{}", std::str::from_utf8(&buf)?);
         assert_eq!("\"\\\"\\n\\t\"", std::str::from_utf8(&buf)?);
+        Ok(())
+    }
+
+    #[test]
+    #[serial]
+    fn use_custom_env_var() -> Result<(), Box<dyn Error>> {
+        // USE FOO_LOG instead of RUST_LOG for env var. Sets level to info
+        std::env::set_var("FOO_LOG", "info");
+        // create rx/tx channels to captue log output
+        let (rx, tx) = std::sync::mpsc::channel();
+        let custom_env_logger = builder_from_env("FOO_LOG")
+            .target(env_logger::Target::Pipe(Box::new(WriteAdapter {
+                sender: rx,
+            })))
+            .build();
+
+        replace_logger(custom_env_logger);
+        // log level is info. should be parseable json
+        log::info!("Hello");
+        let hello_info_log = String::from_utf8(tx.try_iter().collect::<Vec<u8>>()).unwrap();
+        let hello_log_parsed: serde_json::Value = serde_json::from_str(hello_info_log.as_str())?;
+        println!("Parsed json message: {}", hello_log_parsed);
+        assert!(hello_log_parsed["msg"] == "Hello");
+        // should not print debug level logs due to FOO_LOG value
+        log::debug!("Hidden");
+        let hidden_debug_log = String::from_utf8(tx.try_iter().collect::<Vec<u8>>()).unwrap();
+        println!("Hidden Log: {}", hidden_debug_log);
+        assert!(hidden_debug_log.is_empty());
         Ok(())
     }
 }

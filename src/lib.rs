@@ -8,7 +8,7 @@
 //! * `iso-timestamps`
 //!
 //! By default, a timestamp field called `ts` is emitted with the current unix epic timestamp in seconds
-//! You can replace this with IOS-8601 timestamps by enabling the `iso-timestamps` feature. Note, this will add `chrono` crate
+//! You can replace this with IOS-8601 timestamps by enabling the `iso-timestamps` feature. Note, this will add `time` crate
 //! to your dependency tree.
 //!
 //! ```toml
@@ -139,7 +139,7 @@ where
         write!(
             f,
             "\"ts\":\"{}\"",
-            chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+            time::OffsetDateTime::now_utc().format(&time::format_description::well_known::Rfc3339).unwrap()
         )?;
     }
     #[cfg(not(feature = "iso-timestamps"))]
